@@ -13,7 +13,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Movie Review',
+          'Movie Review develop',
           style: TextStyle(
             color: Colors.white
           ),
