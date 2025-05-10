@@ -13,12 +13,11 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Movie Review develop',
-          style: TextStyle(
-            color: Colors.white
-          ),
+          'Movie Review',
+          style: Theme.of(context).textTheme.titleLarge,
         ),
-        backgroundColor: Color(0xFFE50914),
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        foregroundColor: Theme.of(context).appBarTheme.foregroundColor,
       ),
       body: Stack(
         children: [
@@ -26,19 +25,16 @@ class _LoginPageState extends State<LoginPage> {
             child: Image.asset(
               'lib/assets/images/imageCapa.jpg',
               fit: BoxFit.cover,
-            )
+            ),
           ),
           Positioned(
             top: 60,
-            left: 80,
+            left: 90,
             right: 80,
             child: Text(
               'Veja detalhes dos filmes em lançamento, e muito mais!',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-              ),
-            )
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
           ),
           Center(
             child: Container(
@@ -49,68 +45,97 @@ class _LoginPageState extends State<LoginPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        'Seja bem-vindo(a) ao seu app de filmes favorito!',
-                        style: TextStyle(
-                          color: Colors.white,
+                      Container(
+                        padding: EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          color: Color(0xFFE50914).withValues(alpha: 0.7),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Text(
+                          'Seja bem-vindo(a) ao seu app de filmes favorito!',
+                          style: Theme.of(context).textTheme.titleMedium,
                         ),
                       ),
-                      SizedBox(height: 10,),
+                      SizedBox(height: 10),
                       Text(
-                        'Faça login para continuar',
-                        style: TextStyle(color: Colors.white),
+                        'Faça login para continuar.',
+                        style: Theme.of(context).textTheme.titleSmall,
                       ),
                       SizedBox(height: 15),
                       Padding(
                         padding: EdgeInsets.all(5),
                         child: TextFormField(
+                          cursorColor: Colors.black,
                           decoration: InputDecoration(
                             labelText: 'E-mail:',
-                            prefixIcon: Icon(Icons.email),
-                            filled: true,
-                            fillColor: Colors.white,
+                            labelStyle: TextStyle(color: Colors.black),
+                            prefixIcon: Icon(Icons.email, color: Colors.black),
+                            focusedBorder: Theme.of(context).inputDecorationTheme.focusedBorder,
+                            enabledBorder: Theme.of(context).inputDecorationTheme.enabledBorder,
+                            filled: Theme.of(context).inputDecorationTheme.filled,
+                            fillColor: Theme.of(context).inputDecorationTheme.fillColor,
                           ),
                         ),
                       ),
                       Padding(
                         padding: EdgeInsets.all(5),
                         child: TextFormField(
+                          cursorColor: Colors.black,
                           decoration: InputDecoration(
                             labelText: 'Senha:',
-                            prefixIcon: Icon(Icons.password),
-                            filled: true,
-                            fillColor: Colors.white,
+                            labelStyle: TextStyle(color: Colors.black),
+                            prefixIcon: Icon(
+                              Icons.password,
+                              color: Colors.black,
+                            ),
+                            focusedBorder: Theme.of(context).inputDecorationTheme.focusedBorder,
+                            enabledBorder: Theme.of(context).inputDecorationTheme.enabledBorder,
+                            filled: Theme.of(context).inputDecorationTheme.filled,
+                            fillColor: Theme.of(context).inputDecorationTheme.fillColor,
                           ),
                         ),
                       ),
-                      SizedBox(height: 10,),
+                      SizedBox(height: 10),
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: (){}, 
-                          child: Text('Login')
+                          onPressed: () {},
+                          style: Theme.of(context).elevatedButtonTheme.style,
+                          child: Text('Login'),
                         ),
                       ),
                       TextButton(
-                        onPressed: (){}, 
+                        onPressed: () {},
                         style: TextButton.styleFrom(
-                          textStyle: TextStyle(decoration: TextDecoration.underline)
-                        ),
-                        child: Text(
-                          'Não tem uma conta? Cadastre-se.',
-                          style: TextStyle(
-                            color: Colors.white70
+                          textStyle: TextStyle(
+                            decoration: TextDecoration.underline,
                           ),
-                        )
-                      )
+                        ),
+                        child: Text.rich(
+                          TextSpan(
+                            text: 'Não tem uma conta?',
+                            style: TextStyle(color: Colors.white70),
+                            children: [
+                              TextSpan(
+                                text: ' Cadastre-se',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              TextSpan(
+                                text: '.',
+                                style: TextStyle(color: Colors.white70),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ),
             ),
-          )
+          ),
         ],
-      )
+      ),
     );
   }
 }
