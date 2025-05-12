@@ -8,6 +8,11 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  final _formKey = GlobalKey<FormState>();
+  TextEditingController emailregister = TextEditingController();
+  TextEditingController passwordregister = TextEditingController();
+  TextEditingController confirmpasswordregister = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,6 +37,7 @@ class _RegisterPageState extends State<RegisterPage> {
               margin: EdgeInsets.only(top: 200),
               padding: EdgeInsets.all(10),
               child: Form(
+                key: _formKey,
                 child: SingleChildScrollView(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -61,11 +67,31 @@ class _RegisterPageState extends State<RegisterPage> {
                             labelText: 'E-mail:',
                             labelStyle: TextStyle(color: Colors.black),
                             prefixIcon: Icon(Icons.email, color: Colors.black),
-                            focusedBorder: Theme.of(context).inputDecorationTheme.focusedBorder,
-                            enabledBorder: Theme.of(context).inputDecorationTheme.enabledBorder,
-                            filled: Theme.of(context).inputDecorationTheme.filled,
-                            fillColor: Theme.of(context).inputDecorationTheme.fillColor,
+                            focusedBorder:
+                                Theme.of(
+                                  context,
+                                ).inputDecorationTheme.focusedBorder,
+                            enabledBorder:
+                                Theme.of(
+                                  context,
+                                ).inputDecorationTheme.enabledBorder,
+                            filled:
+                                Theme.of(context).inputDecorationTheme.filled,
+                            fillColor:
+                                Theme.of(
+                                  context,
+                                ).inputDecorationTheme.fillColor,
                           ),
+                          controller: emailregister,
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return 'Preencha o campo com um email.';
+                            }
+                            if (!value.contains('@')) {
+                              return 'Digite um email válido.';
+                            }
+                            return null;
+                          },
                         ),
                       ),
                       Padding(
@@ -79,11 +105,32 @@ class _RegisterPageState extends State<RegisterPage> {
                               Icons.password,
                               color: Colors.black,
                             ),
-                            focusedBorder: Theme.of(context).inputDecorationTheme.focusedBorder,
-                            enabledBorder: Theme.of(context).inputDecorationTheme.enabledBorder,
-                            filled: Theme.of(context).inputDecorationTheme.filled,
-                            fillColor: Theme.of(context).inputDecorationTheme.fillColor,
+                            focusedBorder:
+                                Theme.of(
+                                  context,
+                                ).inputDecorationTheme.focusedBorder,
+                            enabledBorder:
+                                Theme.of(
+                                  context,
+                                ).inputDecorationTheme.enabledBorder,
+                            filled:
+                                Theme.of(context).inputDecorationTheme.filled,
+                            fillColor:
+                                Theme.of(
+                                  context,
+                                ).inputDecorationTheme.fillColor,
                           ),
+                          controller: passwordregister,
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return 'O campo senha não pode estar vazio.';
+                            }
+                            if (value.trim().length < 6) {
+                              return 'A senha deve ter pelo menos 6 caracteres.';
+                            }
+                            return null;
+                          },
+                          obscureText: true,
                         ),
                       ),
                       Padding(
@@ -97,18 +144,40 @@ class _RegisterPageState extends State<RegisterPage> {
                               Icons.password,
                               color: Colors.black,
                             ),
-                            focusedBorder: Theme.of(context).inputDecorationTheme.focusedBorder,
-                            enabledBorder: Theme.of(context).inputDecorationTheme.enabledBorder,
-                            filled: Theme.of(context).inputDecorationTheme.filled,
-                            fillColor: Theme.of(context).inputDecorationTheme.fillColor,
+                            focusedBorder:
+                                Theme.of(
+                                  context,
+                                ).inputDecorationTheme.focusedBorder,
+                            enabledBorder:
+                                Theme.of(
+                                  context,
+                                ).inputDecorationTheme.enabledBorder,
+                            filled:
+                                Theme.of(context).inputDecorationTheme.filled,
+                            fillColor:
+                                Theme.of(
+                                  context,
+                                ).inputDecorationTheme.fillColor,
                           ),
+                          controller: confirmpasswordregister,
+                          validator: (value) {
+                            if (value != passwordregister.text) {
+                              return 'As senhas não conferem';
+                            }
+                            return null;
+                          },
+                          obscureText: true,
                         ),
                       ),
                       SizedBox(height: 10),
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            if(_formKey.currentState!.validate()){
+
+                            }
+                          },
                           style: Theme.of(context).elevatedButtonTheme.style,
                           child: Text('Registrar'),
                         ),
