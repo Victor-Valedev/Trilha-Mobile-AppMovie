@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:moviesapp/utils/constants.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -105,7 +106,12 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushNamed(
+                            context, 
+                            AppRoutes.REGISTER_PAGE
+                          );
+                        },
                         style: TextButton.styleFrom(
                           textStyle: TextStyle(
                             decoration: TextDecoration.underline,
