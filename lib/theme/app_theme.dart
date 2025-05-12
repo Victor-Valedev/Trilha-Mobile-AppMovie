@@ -18,6 +18,7 @@ class AppTheme {
     ),
 
     inputDecorationTheme: InputDecorationTheme(
+      errorStyle: TextStyle(color: const Color.fromARGB(255, 236, 113, 113)),
       focusedBorder: UnderlineInputBorder(
         borderSide: BorderSide(color: Colors.black), // quando focado
       ),

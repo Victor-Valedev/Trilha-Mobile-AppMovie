@@ -9,6 +9,10 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final _formKey = GlobalKey<FormState>();
+  TextEditingController emailUser = TextEditingController();
+  TextEditingController passwordUser = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,6 +46,7 @@ class _LoginPageState extends State<LoginPage> {
               margin: EdgeInsets.only(top: 200),
               padding: EdgeInsets.all(10),
               child: Form(
+                key: _formKey,
                 child: SingleChildScrollView(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -67,21 +72,42 @@ class _LoginPageState extends State<LoginPage> {
                         padding: EdgeInsets.all(5),
                         child: TextFormField(
                           cursorColor: Colors.black,
+                          controller: emailUser,
                           decoration: InputDecoration(
                             labelText: 'E-mail:',
                             labelStyle: TextStyle(color: Colors.black),
                             prefixIcon: Icon(Icons.email, color: Colors.black),
-                            focusedBorder: Theme.of(context).inputDecorationTheme.focusedBorder,
-                            enabledBorder: Theme.of(context).inputDecorationTheme.enabledBorder,
-                            filled: Theme.of(context).inputDecorationTheme.filled,
-                            fillColor: Theme.of(context).inputDecorationTheme.fillColor,
+                            focusedBorder:
+                                Theme.of(
+                                  context,
+                                ).inputDecorationTheme.focusedBorder,
+                            enabledBorder:
+                                Theme.of(
+                                  context,
+                                ).inputDecorationTheme.enabledBorder,
+                            filled:
+                                Theme.of(context).inputDecorationTheme.filled,
+                            fillColor:
+                                Theme.of(
+                                  context,
+                                ).inputDecorationTheme.fillColor,
                           ),
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return 'Preencha o campo com um email.';
+                            }
+                            if (!value.contains('@')) {
+                              return 'Digite um email válido.';
+                            }
+                            return null;
+                          },
                         ),
                       ),
                       Padding(
                         padding: EdgeInsets.all(5),
                         child: TextFormField(
                           cursorColor: Colors.black,
+                          controller: passwordUser,
                           decoration: InputDecoration(
                             labelText: 'Senha:',
                             labelStyle: TextStyle(color: Colors.black),
@@ -89,28 +115,47 @@ class _LoginPageState extends State<LoginPage> {
                               Icons.password,
                               color: Colors.black,
                             ),
-                            focusedBorder: Theme.of(context).inputDecorationTheme.focusedBorder,
-                            enabledBorder: Theme.of(context).inputDecorationTheme.enabledBorder,
-                            filled: Theme.of(context).inputDecorationTheme.filled,
-                            fillColor: Theme.of(context).inputDecorationTheme.fillColor,
+                            focusedBorder:
+                                Theme.of(
+                                  context,
+                                ).inputDecorationTheme.focusedBorder,
+                            enabledBorder:
+                                Theme.of(
+                                  context,
+                                ).inputDecorationTheme.enabledBorder,
+                            filled:
+                                Theme.of(context).inputDecorationTheme.filled,
+                            fillColor:
+                                Theme.of(
+                                  context,
+                                ).inputDecorationTheme.fillColor,
                           ),
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return 'O campo senha não pode estar vazio.';
+                            }
+                            if (value.trim().length < 6) {
+                              return 'A senha deve ter pelo menos 6 caracteres.';
+                            }
+                            return null;
+                          },
+                          obscureText: true,
                         ),
                       ),
                       SizedBox(height: 10),
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {}
+                          },
                           style: Theme.of(context).elevatedButtonTheme.style,
                           child: Text('Login'),
                         ),
                       ),
                       TextButton(
                         onPressed: () {
-                          Navigator.pushNamed(
-                            context, 
-                            AppRoutes.REGISTER_PAGE
-                          );
+                          Navigator.pushNamed(context, AppRoutes.REGISTER_PAGE);
                         },
                         style: TextButton.styleFrom(
                           textStyle: TextStyle(
