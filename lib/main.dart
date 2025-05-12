@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:moviesapp/theme/app_theme.dart';
-import 'package:moviesapp/ui/login_page.dart';
+import 'package:moviesapp/ui/register_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Movie Review',
       theme: AppTheme.appTheme,
-      home: const LoginPage(),
+      home: const RegisterPage(),
     );
   }
 }
