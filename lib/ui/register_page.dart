@@ -1,4 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:moviesapp/exeptions/firebase_exceptions.dart';
+import 'package:moviesapp/service/auth_service.dart';
+import 'package:moviesapp/ui/login_page.dart';
 
 
 class RegisterPage extends StatefulWidget {
@@ -10,9 +14,76 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
-  TextEditingController emailregister = TextEditingController();
-  TextEditingController passwordregister = TextEditingController();
-  TextEditingController confirmpasswordregister = TextEditingController();
+  TextEditingController emailRegister = TextEditingController();
+  TextEditingController passwordRegister = TextEditingController();
+  TextEditingController confirmpasswordRegister = TextEditingController();
+  bool _isLoading = false;
+  final AuthService _auth = AuthService();
+
+  Future<void> register() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    if (!_formKey.currentState!.validate()) {
+      setState(() {
+        _isLoading = false;
+      });
+      return;
+    }
+
+    try {
+      //Sucesso ao fazer registrar usuário
+      await _auth.register(
+        email: emailRegister.text,
+        password: passwordRegister.text,
+      );
+
+      setState(() {
+        _isLoading = false;
+      });
+
+      if (!mounted) {
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              Text(
+                'Registro feito com sucesso!',
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+              SizedBox(width: 8),
+              Icon(Icons.check, color: Colors.green),
+            ],
+          ),
+        ),
+      );
+      Navigator.pushAndRemoveUntil(
+        context, 
+        MaterialPageRoute(builder: (ctx) => LoginPage()), 
+        (route) => false,
+      );
+    } on FirebaseAuthException catch (e) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _isLoading = false;
+      });
+      FirebaseExceptions.firebaseAuthErros(context, e);
+    }
+  }
+
+  @override
+  void dispose() {
+    emailRegister.dispose();
+    passwordRegister.dispose();
+    confirmpasswordRegister.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +154,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   context,
                                 ).inputDecorationTheme.fillColor,
                           ),
-                          controller: emailregister,
+                          controller: emailRegister,
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) {
                               return 'Preencha o campo com um email.';
@@ -121,7 +192,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   context,
                                 ).inputDecorationTheme.fillColor,
                           ),
-                          controller: passwordregister,
+                          controller: passwordRegister,
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) {
                               return 'O campo senha não pode estar vazio.';
@@ -160,9 +231,9 @@ class _RegisterPageState extends State<RegisterPage> {
                                   context,
                                 ).inputDecorationTheme.fillColor,
                           ),
-                          controller: confirmpasswordregister,
+                          controller: confirmpasswordRegister,
                           validator: (value) {
-                            if (value != passwordregister.text) {
+                            if (value != passwordRegister.text) {
                               return 'As senhas não conferem';
                             }
                             return null;
@@ -175,11 +246,15 @@ class _RegisterPageState extends State<RegisterPage> {
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                            }
+                            register();
                           },
                           style: Theme.of(context).elevatedButtonTheme.style,
-                          child: Text('Registrar'),
+                          child:
+                              _isLoading
+                                  ? CircularProgressIndicator(
+                                    color: Colors.white54,
+                                  )
+                                  : Text('Registrar'),
                         ),
                       ),
                     ],
