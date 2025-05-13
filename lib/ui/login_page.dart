@@ -147,7 +147,8 @@ class _LoginPageState extends State<LoginPage> {
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () {
-                            if (_formKey.currentState!.validate()) {}
+                            if (_formKey.currentState!.validate()) {
+                            }
                           },
                           style: Theme.of(context).elevatedButtonTheme.style,
                           child: Text('Login'),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
 
@@ -174,8 +175,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () {
-                            if(_formKey.currentState!.validate()){
-
+                            if (_formKey.currentState!.validate()) {
                             }
                           },
                           style: Theme.of(context).elevatedButtonTheme.style,
