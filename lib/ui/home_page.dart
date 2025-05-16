@@ -16,8 +16,10 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final List<Movie> movies = [];
   final MovieService _movieService = MovieService();
+  final ScrollController _scrollController = ScrollController();
   bool _isLoading = false;
-
+  bool _isLoadingMore = false;
+  int _currentPage = 1;
 
   @override
   void initState() {
@@ -25,7 +27,39 @@ class _HomePageState extends State<HomePage> {
       _isLoading = true;
     });
     fetchMovies();
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent - 200) {
+        fetchMoreMovies();
+      }
+    });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  Future<void> fetchMoreMovies() async {
+    if (_isLoadingMore) return;
+
+    setState(() {
+      _isLoadingMore = true;
+      _currentPage++;
+    });
+
+    final MovieResponse response = await _movieService.getPopularMovies(
+      page: _currentPage,
+    );
+
+    setState(() {
+      movies.addAll(response.results);
+      _isLoading = false;
+      _isLoadingMore = false;
+    });
   }
 
   Future<void> fetchMovies() async {
@@ -44,6 +78,7 @@ class _HomePageState extends State<HomePage> {
           _isLoading
               ? Center(child: CircularProgressIndicator(color: Colors.black))
               : ListView(
+                controller: _scrollController,
                 padding: const EdgeInsets.all(12),
                 children: [
                   Row(
@@ -156,7 +191,20 @@ class _HomePageState extends State<HomePage> {
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   SizedBox(height: 10),
-                  GridMovies(movies: movies)
+                  Column(
+                    children: [
+                      GridMovies(movies: movies),
+                      if (_isLoadingMore)
+                        Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
                 ],
               ),
     );
