@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:moviesapp/components/grid_movies.dart';
 import 'package:moviesapp/components/item_movie.dart';
 import 'package:moviesapp/models/movie.dart';
 import 'package:moviesapp/models/movie_response.dart';
@@ -155,6 +156,7 @@ class _HomePageState extends State<HomePage> {
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   SizedBox(height: 10),
+                  GridMovies(movies: movies)
                 ],
               ),
     );
