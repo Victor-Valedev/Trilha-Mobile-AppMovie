@@ -5,7 +5,6 @@ import 'package:moviesapp/models/movie.dart';
 import 'package:moviesapp/models/movie_response.dart';
 import 'package:moviesapp/service/movie_service.dart';
 
-
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -18,13 +17,14 @@ class _HomePageState extends State<HomePage> {
   final MovieService _movieService = MovieService();
   bool _isLoading = false;
 
+
   @override
   void initState() {
     setState(() {
       _isLoading = true;
     });
-    super.initState();
     fetchMovies();
+    super.initState();
   }
 
   Future<void> fetchMovies() async {
@@ -39,13 +39,13 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Seja bem-vindo!')),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator(color: Colors.black))
-          : Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Row(
+      body:
+          _isLoading
+              ? Center(child: CircularProgressIndicator(color: Colors.black))
+              : ListView(
+                padding: const EdgeInsets.all(12),
+                children: [
+                  Row(
                     children: [
                       Container(
                         padding: EdgeInsets.all(5),
@@ -62,7 +62,7 @@ class _HomePageState extends State<HomePage> {
                       Container(
                         padding: EdgeInsets.all(5),
                         decoration: BoxDecoration(
-                          color: Color(0xFFE50914).withValues(alpha:0.7),
+                          color: Color(0xFFE50914).withValues(alpha: 0.7),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Text(
@@ -74,7 +74,7 @@ class _HomePageState extends State<HomePage> {
                       Container(
                         padding: EdgeInsets.all(5),
                         decoration: BoxDecoration(
-                          color: Color(0xFFE50914).withValues(alpha:0.7),
+                          color: Color(0xFFE50914).withValues(alpha: 0.7),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Text(
@@ -84,91 +84,79 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ],
                   ),
-                ),
-                SizedBox(height: 15),
-                CarouselSlider(
-                  options: CarouselOptions(
-                    height: 200,
-                    autoPlay: false,
-                    enlargeCenterPage: true,
-                    viewportFraction: 0.8,
-                    aspectRatio: 16 / 9,
-                  ),
-                  items: movies.map((movie) {
-                    final imageUrl =
-                        'https://image.tmdb.org/t/p/w500${movie.posterPath}';
-                    return Builder(
-                      builder: (BuildContext context) {
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => Scaffold(
-                                  appBar: AppBar(title: Text(movie.title)),
-                                  body: ItemMovie(
-                                    imageUrl: imageUrl,
-                                    title: movie.title,
-                                    subtitle: movie.originalTitle,
-                                    rating: movie.voteAverage,
-                                    synopsis: movie.overview,
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            margin: EdgeInsets.symmetric(horizontal: 5.0),
-                            decoration: BoxDecoration(color: Colors.grey),
-                            child: Stack(
-                              children: [
-                                Positioned.fill(
-                                  child: Image.network(
-                                    imageUrl,
-                                    fit: BoxFit.cover,
-                                    loadingBuilder: (context, child, loadingProgress) {
-                                      if (loadingProgress == null) return child;
-                                      return Center(
-                                        child: CircularProgressIndicator(
-                                          value: loadingProgress.expectedTotalBytes != null
-                                              ? loadingProgress.cumulativeBytesLoaded /
-                                                  loadingProgress.expectedTotalBytes!
-                                              : null,
+                  SizedBox(height: 15),
+                  CarouselSlider(
+                    options: CarouselOptions(
+                      height: 200,
+                      autoPlay: true,
+                      enlargeCenterPage: true,
+                      viewportFraction: 0.8,
+                      aspectRatio: 16 / 9,
+                    ),
+                    items:
+                        movies.map((movie) {
+                          final imageUrl =
+                              'https://image.tmdb.org/t/p/w500${movie.posterPath}';
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (_) => Scaffold(
+                                        appBar: AppBar(
+                                          title: Text(movie.title),
                                         ),
-                                      );
-                                    },
-                                  ),
+                                        body: ItemMovie(
+                                          imageUrl: imageUrl,
+                                          title: movie.title,
+                                          subtitle: movie.originalTitle,
+                                          rating: movie.voteAverage,
+                                          synopsis: movie.overview,
+                                        ),
+                                      ),
                                 ),
-                                Positioned(
-                                  top: 10,
-                                  left: 10,
-                                  right: 10,
-                                  child: Text(
-                                    movie.title,
-                                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                      color: Colors.white,
+                              );
+                            },
+                            child: Container(
+                              margin: EdgeInsets.symmetric(horizontal: 5.0),
+                              decoration: BoxDecoration(color: Colors.grey),
+                              child: Stack(
+                                children: [
+                                  Positioned.fill(
+                                    child: Image.network(
+                                      imageUrl,
+                                      fit: BoxFit.cover,
                                     ),
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 2,
-                                    softWrap: true,
                                   ),
-                                ),
-                              ],
+                                  Positioned(
+                                    top: 10,
+                                    left: 10,
+                                    right: 10,
+                                    child: Text(
+                                      movie.title,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium
+                                          ?.copyWith(color: Colors.white),
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 2,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                    );
-                  }).toList(),
-                ),
-                SizedBox(height: 15),
-                Text(
-                  'Filmes populares',
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-              ],
-            ),
+                          );
+                        }).toList(),
+                  ),
+                  SizedBox(height: 20),
+                  Text(
+                    'Filmes populares',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  SizedBox(height: 10),
+                ],
+              ),
     );
   }
 }
