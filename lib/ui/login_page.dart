@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:moviesapp/exeptions/firebase_exceptions.dart';
 import 'package:moviesapp/service/auth_service.dart';
 import 'package:moviesapp/ui/home_page.dart';
-import 'package:moviesapp/utils/constants.dart';
+import 'package:moviesapp/utils/app_routes.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
