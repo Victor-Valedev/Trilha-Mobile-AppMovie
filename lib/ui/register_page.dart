@@ -1,4 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:moviesapp/exeptions/firebase_exceptions.dart';
+import 'package:moviesapp/service/auth_service.dart';
+import 'package:moviesapp/ui/login_page.dart';
+
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -8,6 +13,78 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  final _formKey = GlobalKey<FormState>();
+  TextEditingController emailRegister = TextEditingController();
+  TextEditingController passwordRegister = TextEditingController();
+  TextEditingController confirmpasswordRegister = TextEditingController();
+  bool _isLoading = false;
+  final AuthService _auth = AuthService();
+
+  Future<void> register() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    if (!_formKey.currentState!.validate()) {
+      setState(() {
+        _isLoading = false;
+      });
+      return;
+    }
+
+    try {
+      //Sucesso ao fazer registrar usuário
+      await _auth.register(
+        email: emailRegister.text,
+        password: passwordRegister.text,
+      );
+
+      setState(() {
+        _isLoading = false;
+      });
+
+      if (!mounted) {
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              Text(
+                'Registro feito com sucesso!',
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+              SizedBox(width: 8),
+              Icon(Icons.check, color: Colors.green),
+            ],
+          ),
+        ),
+      );
+      Navigator.pushAndRemoveUntil(
+        context, 
+        MaterialPageRoute(builder: (ctx) => LoginPage()), 
+        (route) => false,
+      );
+    } on FirebaseAuthException catch (e) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _isLoading = false;
+      });
+      FirebaseExceptions.firebaseAuthErros(context, e);
+    }
+  }
+
+  @override
+  void dispose() {
+    emailRegister.dispose();
+    passwordRegister.dispose();
+    confirmpasswordRegister.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,6 +109,7 @@ class _RegisterPageState extends State<RegisterPage> {
               margin: EdgeInsets.only(top: 200),
               padding: EdgeInsets.all(10),
               child: Form(
+                key: _formKey,
                 child: SingleChildScrollView(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -61,11 +139,31 @@ class _RegisterPageState extends State<RegisterPage> {
                             labelText: 'E-mail:',
                             labelStyle: TextStyle(color: Colors.black),
                             prefixIcon: Icon(Icons.email, color: Colors.black),
-                            focusedBorder: Theme.of(context).inputDecorationTheme.focusedBorder,
-                            enabledBorder: Theme.of(context).inputDecorationTheme.enabledBorder,
-                            filled: Theme.of(context).inputDecorationTheme.filled,
-                            fillColor: Theme.of(context).inputDecorationTheme.fillColor,
+                            focusedBorder:
+                                Theme.of(
+                                  context,
+                                ).inputDecorationTheme.focusedBorder,
+                            enabledBorder:
+                                Theme.of(
+                                  context,
+                                ).inputDecorationTheme.enabledBorder,
+                            filled:
+                                Theme.of(context).inputDecorationTheme.filled,
+                            fillColor:
+                                Theme.of(
+                                  context,
+                                ).inputDecorationTheme.fillColor,
                           ),
+                          controller: emailRegister,
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return 'Preencha o campo com um email.';
+                            }
+                            if (!value.contains('@')) {
+                              return 'Digite um email válido.';
+                            }
+                            return null;
+                          },
                         ),
                       ),
                       Padding(
@@ -79,11 +177,32 @@ class _RegisterPageState extends State<RegisterPage> {
                               Icons.password,
                               color: Colors.black,
                             ),
-                            focusedBorder: Theme.of(context).inputDecorationTheme.focusedBorder,
-                            enabledBorder: Theme.of(context).inputDecorationTheme.enabledBorder,
-                            filled: Theme.of(context).inputDecorationTheme.filled,
-                            fillColor: Theme.of(context).inputDecorationTheme.fillColor,
+                            focusedBorder:
+                                Theme.of(
+                                  context,
+                                ).inputDecorationTheme.focusedBorder,
+                            enabledBorder:
+                                Theme.of(
+                                  context,
+                                ).inputDecorationTheme.enabledBorder,
+                            filled:
+                                Theme.of(context).inputDecorationTheme.filled,
+                            fillColor:
+                                Theme.of(
+                                  context,
+                                ).inputDecorationTheme.fillColor,
                           ),
+                          controller: passwordRegister,
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return 'O campo senha não pode estar vazio.';
+                            }
+                            if (value.trim().length < 6) {
+                              return 'A senha deve ter pelo menos 6 caracteres.';
+                            }
+                            return null;
+                          },
+                          obscureText: true,
                         ),
                       ),
                       Padding(
@@ -97,20 +216,45 @@ class _RegisterPageState extends State<RegisterPage> {
                               Icons.password,
                               color: Colors.black,
                             ),
-                            focusedBorder: Theme.of(context).inputDecorationTheme.focusedBorder,
-                            enabledBorder: Theme.of(context).inputDecorationTheme.enabledBorder,
-                            filled: Theme.of(context).inputDecorationTheme.filled,
-                            fillColor: Theme.of(context).inputDecorationTheme.fillColor,
+                            focusedBorder:
+                                Theme.of(
+                                  context,
+                                ).inputDecorationTheme.focusedBorder,
+                            enabledBorder:
+                                Theme.of(
+                                  context,
+                                ).inputDecorationTheme.enabledBorder,
+                            filled:
+                                Theme.of(context).inputDecorationTheme.filled,
+                            fillColor:
+                                Theme.of(
+                                  context,
+                                ).inputDecorationTheme.fillColor,
                           ),
+                          controller: confirmpasswordRegister,
+                          validator: (value) {
+                            if (value != passwordRegister.text) {
+                              return 'As senhas não conferem';
+                            }
+                            return null;
+                          },
+                          obscureText: true,
                         ),
                       ),
                       SizedBox(height: 10),
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            register();
+                          },
                           style: Theme.of(context).elevatedButtonTheme.style,
-                          child: Text('Registrar'),
+                          child:
+                              _isLoading
+                                  ? CircularProgressIndicator(
+                                    color: Colors.white54,
+                                  )
+                                  : Text('Registrar'),
                         ),
                       ),
                     ],
