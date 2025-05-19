@@ -5,6 +5,7 @@ import 'package:moviesapp/theme/app_theme.dart';
 import 'package:moviesapp/ui/home_page.dart';
 import 'package:moviesapp/ui/login_page.dart';
 import 'package:moviesapp/ui/register_page.dart';
+import 'package:moviesapp/ui/search_page.dart';
 import 'package:moviesapp/utils/app_routes.dart';
 
 void main() async {
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
         AppRoutes.LOGIN_PAGE: (ctx) => LoginPage(),
         AppRoutes.REGISTER_PAGE: (ctx) => RegisterPage(),
         AppRoutes.HOME_PAGE: (ctx) => HomePage(),
+        AppRoutes.SEARCH_PAGE: (ctx) => SearchPage(),
       },
     );
   }
