@@ -2,24 +2,25 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:moviesapp/exeptions/firebase_exceptions.dart';
 import 'package:moviesapp/service/auth_service.dart';
-import 'package:moviesapp/ui/home_page.dart';
-import 'package:moviesapp/utils/app_routes.dart';
+import 'package:moviesapp/ui/login_page.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
-  TextEditingController emailUser = TextEditingController();
-  TextEditingController passwordUser = TextEditingController();
-  final AuthService _auth = AuthService();
+  TextEditingController emailRegister = TextEditingController();
+  TextEditingController passwordRegister = TextEditingController();
+  TextEditingController confirmpasswordRegister = TextEditingController();
   bool _isLoading = false;
+  final AuthService _auth = AuthService();
 
-  Future<void> login() async {
+  Future<void> register() async {
     setState(() {
       _isLoading = true;
     });
@@ -32,11 +33,14 @@ class _LoginPageState extends State<LoginPage> {
     }
 
     try {
-      //Se der sucesso
-      await _auth.login(email: emailUser.text, password: passwordUser.text);
+      //Sucesso ao fazer registrar usuário
+      await _auth.register(
+        email: emailRegister.text,
+        password: passwordRegister.text,
+      );
 
       setState(() {
-        _isLoading = true;
+        _isLoading = false;
       });
 
       if (!mounted) {
@@ -48,7 +52,7 @@ class _LoginPageState extends State<LoginPage> {
           content: Row(
             children: [
               Text(
-                'Login realizado com sucesso!',
+                'Registro feito com sucesso!',
                 style: Theme.of(context).textTheme.titleSmall,
               ),
               SizedBox(width: 8),
@@ -57,25 +61,27 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
       );
-
       Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (ctx) => HomePage()),
+        context, 
+        MaterialPageRoute(builder: (ctx) => LoginPage()), 
         (route) => false,
       );
     } on FirebaseAuthException catch (e) {
+      if (!mounted) {
+        return;
+      }
       setState(() {
         _isLoading = false;
       });
-
       FirebaseExceptions.firebaseAuthErros(context, e);
     }
   }
 
   @override
   void dispose() {
-    emailUser.dispose();
-    passwordUser.dispose();
+    emailRegister.dispose();
+    passwordRegister.dispose();
+    confirmpasswordRegister.dispose();
     super.dispose();
   }
 
@@ -84,7 +90,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Movie Review',
+          'Registre-se',
           style: Theme.of(context).textTheme.titleLarge,
         ),
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
@@ -94,17 +100,8 @@ class _LoginPageState extends State<LoginPage> {
         children: [
           Positioned.fill(
             child: Image.asset(
-              'assets/images/imageCapa.jpg',
+              'assets/images/imageRegister.jpg',
               fit: BoxFit.cover,
-            ),
-          ),
-          Positioned(
-            top: 60,
-            left: 90,
-            right: 80,
-            child: Text(
-              'Veja detalhes dos filmes em lançamento, e muito mais!',
-              style: Theme.of(context).textTheme.titleMedium,
             ),
           ),
           Center(
@@ -124,13 +121,13 @@ class _LoginPageState extends State<LoginPage> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Text(
-                          'Seja bem-vindo(a) ao seu app de filmes favorito!',
+                          'Registre-se para fazer login em nossa plataforma!',
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                       ),
                       SizedBox(height: 10),
                       Text(
-                        'Faça login para continuar.',
+                        'Veja detalhes de filmes em lançamento',
                         style: Theme.of(context).textTheme.titleSmall,
                       ),
                       SizedBox(height: 15),
@@ -138,7 +135,6 @@ class _LoginPageState extends State<LoginPage> {
                         padding: EdgeInsets.all(5),
                         child: TextFormField(
                           cursorColor: Colors.black,
-                          controller: emailUser,
                           decoration: InputDecoration(
                             labelText: 'E-mail:',
                             labelStyle: TextStyle(color: Colors.black),
@@ -158,6 +154,7 @@ class _LoginPageState extends State<LoginPage> {
                                   context,
                                 ).inputDecorationTheme.fillColor,
                           ),
+                          controller: emailRegister,
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) {
                               return 'Preencha o campo com um email.';
@@ -173,7 +170,6 @@ class _LoginPageState extends State<LoginPage> {
                         padding: EdgeInsets.all(5),
                         child: TextFormField(
                           cursorColor: Colors.black,
-                          controller: passwordUser,
                           decoration: InputDecoration(
                             labelText: 'Senha:',
                             labelStyle: TextStyle(color: Colors.black),
@@ -196,6 +192,7 @@ class _LoginPageState extends State<LoginPage> {
                                   context,
                                 ).inputDecorationTheme.fillColor,
                           ),
+                          controller: passwordRegister,
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) {
                               return 'O campo senha não pode estar vazio.';
@@ -208,46 +205,56 @@ class _LoginPageState extends State<LoginPage> {
                           obscureText: true,
                         ),
                       ),
+                      Padding(
+                        padding: EdgeInsets.all(5),
+                        child: TextFormField(
+                          cursorColor: Colors.black,
+                          decoration: InputDecoration(
+                            labelText: 'Confirmar senha:',
+                            labelStyle: TextStyle(color: Colors.black),
+                            prefixIcon: Icon(
+                              Icons.password,
+                              color: Colors.black,
+                            ),
+                            focusedBorder:
+                                Theme.of(
+                                  context,
+                                ).inputDecorationTheme.focusedBorder,
+                            enabledBorder:
+                                Theme.of(
+                                  context,
+                                ).inputDecorationTheme.enabledBorder,
+                            filled:
+                                Theme.of(context).inputDecorationTheme.filled,
+                            fillColor:
+                                Theme.of(
+                                  context,
+                                ).inputDecorationTheme.fillColor,
+                          ),
+                          controller: confirmpasswordRegister,
+                          validator: (value) {
+                            if (value != passwordRegister.text) {
+                              return 'As senhas não conferem';
+                            }
+                            return null;
+                          },
+                          obscureText: true,
+                        ),
+                      ),
                       SizedBox(height: 10),
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () {
-                            login();
+                            register();
                           },
                           style: Theme.of(context).elevatedButtonTheme.style,
                           child:
                               _isLoading
                                   ? CircularProgressIndicator(
-                                    color: Colors.white,
+                                    color: Colors.white54,
                                   )
-                                  : Text('Login'),
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, AppRoutes.REGISTER_PAGE);
-                        },
-                        style: TextButton.styleFrom(
-                          textStyle: TextStyle(
-                            decoration: TextDecoration.underline,
-                          ),
-                        ),
-                        child: Text.rich(
-                          TextSpan(
-                            text: 'Não tem uma conta?',
-                            style: TextStyle(color: Colors.white70),
-                            children: [
-                              TextSpan(
-                                text: ' Cadastre-se',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              TextSpan(
-                                text: '.',
-                                style: TextStyle(color: Colors.white70),
-                              ),
-                            ],
-                          ),
+                                  : Text('Registrar'),
                         ),
                       ),
                     ],
