@@ -146,6 +146,7 @@ class _HomePageState extends State<HomePage> {
                                           title: Text(movie.title),
                                         ),
                                         body: ItemMovie(
+                                          tmdbId: movie.id,
                                           imageUrl: imageUrl,
                                           title: movie.title,
                                           subtitle: movie.originalTitle,

@@ -34,6 +34,7 @@ class GridMovies extends StatelessWidget {
                     (_) => Scaffold(
                       appBar: AppBar(title: Text(movie.title)),
                       body: ItemMovie(
+                        tmdbId: movie.id,
                         imageUrl: imageUrl,
                         title: movie.title,
                         subtitle: movie.originalTitle,

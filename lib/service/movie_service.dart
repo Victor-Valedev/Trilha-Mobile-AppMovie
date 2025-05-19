@@ -22,4 +22,19 @@ class MovieService {
       throw Exception('Erro ao carregar filmes populares');
     }
   }
+
+  Future<MovieResponse> searchMovies(String query) async {
+    final url = Uri.parse(
+      '${ApiConstants.SEARCH_URL}search/movie?api_key=$apiKey&language=pt-BR&query=$query&page=1',
+    );
+
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      return MovieResponse.fromMap(data);
+    } else {
+      throw Exception('Erro ao buscar filmes');
+    }
+  }
 }

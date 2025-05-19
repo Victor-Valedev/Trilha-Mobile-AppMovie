@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:moviesapp/service/auth_service.dart';
 import 'package:moviesapp/ui/login_page.dart';
+import 'package:moviesapp/utils/app_routes.dart';
 
 
 class DrawerComponent extends StatelessWidget {
@@ -77,6 +78,11 @@ class DrawerComponent extends StatelessWidget {
             leading: const Icon(Icons.home),
             title: const Text('Início'),
             onTap: () => Navigator.pop(context),
+          ),
+          ListTile(
+            leading: const Icon(Icons.search),
+            title: const Text('Pesquisar'),
+            onTap: () => Navigator.pushNamed(context, AppRoutes.SEARCH_PAGE),
           ),
           ListTile(
             leading: const Icon(Icons.exit_to_app),
